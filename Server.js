@@ -7,6 +7,7 @@
 //   lib/exec.js     — bash icrası, növbə (mutex), log oxuma/rotasiya
 //   lib/safety.js   — təhlükəsizlik/razılıq siyasəti (həmişə yüklənir), "initialize"-ə əlavə olunur
 //   lib/memory.js   — yaddaş sistemi (Faz 1) təlimat mətni, "initialize"-ə əlavə olunur
+//   lib/apis.js     — API key reyestri (layihələr arası) təlimat mətni, "initialize"-ə əlavə olunur
 //   lib/skills.js   — skil sistemi (skills/<ad>/SKILL.md skan + manifest), "initialize"-ə əlavə olunur
 //   lib/tools/*.js  — hər alət (bash/view/create_file/str_replace/process) öz faylında
 
@@ -17,13 +18,14 @@ const { getPendingBashRequests } = require('./lib/exec');
 const toolsIndex = require('./lib/tools');
 const safety = require('./lib/safety');
 const memory = require('./lib/memory');
+const apis = require('./lib/apis');
 const skills = require('./lib/skills');
 
 // MCP protokolu
 const handle = async ({ method, params, id }) => {
   if (method === 'initialize') {
     const skillsManifest = skills.getManifest();
-    const parts = [safety.instructions, memory.instructions];
+    const parts = [safety.instructions, memory.instructions, apis.instructions];
     if (skillsManifest) parts.push(skillsManifest);
     return { jsonrpc: '2.0', id, result: {
       protocolVersion: '2024-11-05',
