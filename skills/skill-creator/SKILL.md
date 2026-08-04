@@ -27,3 +27,23 @@ Frontmatter tam bu şəkildə olmalıdır (server sadə sətir-parse edir, mür�
 - Sonra `name: ...` və `description: ...` sətirləri (hər biri ayrı sətirdə, `açar: dəyər` formatında)
 - Sonra `---`
 - Sonra sərbəst Markdown body
+
+## Böyük skillərin modul bölünməsi
+
+`SKILL.md`-in body-si ~150-200 sətri keçəndə (mövzu geniştir, çoxlu alt-hissə var), TƏK nəhəng fayl saxlama — bölmə. Bu, `lib/skills.js`-in HƏR "initialize"-də bütün skillərin tam mətnini yükləməsinin qarşısını alır (o, yalnız frontmatter-i oxuyur) VƏ AI-ın diqqətini dağıtmır.
+
+**Qayda:**
+- `SKILL.md` özü QISA "router" olaraq qalır — mövzunun icmalı + hansı alt-fayl nə vaxt lazımdırın cədvəli.
+- Detallar eyni qovluqdakı ayrı fayllara köçür: `skills/<ad>/REFERENCE.md` (ümumi ətraflı material üçün), ya da mövzuya görə bir neçə fayl (məs. `skills/minecraft/bot_builder.md`, `skills/minecraft/pvp_combat.md`).
+- `SKILL.md` bu faylları ADI ilə istinad edir (məs. "Bot qurmaqla bağlı təfərrüat üçün bax: `bot_builder.md`") — AI YALNIZ lazım olan alt-faylı `view` edir, qalanlarını yox.
+- Bu alt-fayllarda frontmatter OLMUR (yalnız `SKILL.md`-in özündə olur) — onlar sistem tərəfindən skanlanmır, sadəcə `SKILL.md`-in özü onlara işarə edir.
+
+**Nümunə struktur:**
+```
+skills/minecraft/
+  SKILL.md          ← frontmatter var, qısa router (~30-50 sətir)
+  bot_builder.md     ← frontmatter YOX, detallı təlimat
+  pvp_combat.md       ← frontmatter YOX, detallı təlimat
+```
+
+Xam/idxal edilən fayl üçün eyni qayda tətbiq olunur — bax `manage-skills` skili.
