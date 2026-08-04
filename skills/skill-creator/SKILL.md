@@ -27,7 +27,11 @@ description: <NƏ VAXT bu skili işlətmək lazımdır — açar sözlər/trigge
    - Düzgün: `docker-deploy`, `npm-publish`, `sql-migration`. Səhv: `Docker-Deploy` (böyük hərf), `-docker` (öndə defis), `docker--deploy` (ardıcıl defis).
 3. Body-də QISA, konkret addımlar yaz — Termux MCP alətlərinə (`bash`/`view`/`create_file`/`str_replace`/`process`) birbaşa istinad et, ümumi/mücərrəd məsləhət yox.
 4. **`description` ən vacib hissədir** — gələcək söhbətdə bu skil YALNIZ description-a əsasən tapılacaq (tam məzmun oxunmadan). Açar sözləri dəqiq, konkret yaz, əks halda skil "görünməz" qalar. 1024 simvoldan uzun olmasın.
+   **"Təkidli" yaz (real Anthropic skill-creator-un müşahidəsi):** AI adətən skilləri "under-trigger" edir — yəni lazım olanda belə işlətmir, çünki istifadəçi dəqiq həmin açar sözü demir. Ona görə description-u sadəcə mövzu ilə YOX, HANSI VƏZİYYƏTLƏRDƏ tetiklənməli onu sadalayaraq, təkidli tonda yaz.
+   - Zəif: `PDF-lərlə iş üçün.`
+   - Güclü: `İstifadəçi PDF-dən bəhs edəndə, PDF açmaq/doldurmaq/birləşdirmək istəyəndə, ya da .pdf fayl adı keçəndə İSTİFADƏ ET — açıq şəkildə "skil işlət" deməsə də.`
 5. Yaratdıqdan sonra istifadəçiyə bildir: "yeni skil yaratdım: `skills/<ad>/SKILL.md`" — sükutla etmə.
+6. **Yüngül sınaq (subagent/eval sistemi olmadan, sadəcə fikirləşərək):** 2-3 qısa nümunə cümlə düşün ki, istifadəçi nə desə bu skil tetiklənməlidir (məs. "docker-a çıxar", "container push et") — bunları istifadəçiyə göstər, "bu ifadələrlə işə düşəcəyini düşünürsən?" deyə soruş. Bu, description-un real söhbətdə işləyib-işləməyəcəyini kod yazmadan yoxlamağın ən sadə yoludur.
 
 ## Format qaydası
 Frontmatter tam bu şəkildə olmalıdır (server sadə sətir-parse edir, mürəkkəb/iç-içə YAML dəstəklənmir — `license`/`compatibility`/`metadata`/`allowed-tools` kimi əlavə spesifikasiya sahələrinə bu layihədə EHTİYAC YOXDUR, yazsan da server onları oxumur):
@@ -52,6 +56,8 @@ Spesifikasiya `SKILL.md`-i 500 sətirdən (~5000 token) kiçik saxlamağı tövs
 `SKILL.md` bu faylları NİSBİ YOL ilə istinad edir (məs. `references/REFERENCE.md`-ə bax) — AI YALNIZ lazım olan faylı `view` edir, qalanlarını yox. İstinadları BİR SƏVİYYƏ dərinliklə saxla (`references/`-dən özünə başqa alt-qovluq açma).
 
 Bu alt-fayllarda frontmatter OLMUR (yalnız `SKILL.md`-in özündə olur) — onlar sistem tərəfindən skanlanmır, sadəcə `SKILL.md`-in özü onlara işarə edir.
+
+**300 sətirdən böyük reference fayl yaransa**, faylın ən başına qısa "içindəkilər" siyahısı əlavə et (başlıqların siyahısı, hər biri qısa 1 sətirlik izahla) — AI tam faylı `view` etməzdən əvvəl hansı hissənin lazım olduğunu bu siyahıdan görə bilsin.
 
 **Nümunə struktur:**
 ```
