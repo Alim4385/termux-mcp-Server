@@ -9,7 +9,7 @@ Bu skil YENİ ALƏT tələb ETMİR — mövcud `view`/`create_file`/`str_replace
 
 ## Nə vaxt işə düşür
 
-- `initialize` manifestində "İDXAL GÖZLƏYƏN FAYLLAR" bölməsi görünəndə (bu, `lib/skills.js`-in avtomatik aşkarlamasıdır — frontmatter-siz/səhv `SKILL.md` və ya `skills/` kökündə tək duran `.md` fayllar orada sadalanır).
+- `initialize` manifestində "İDXAL/DÜZƏLİŞ GÖZLƏYƏN FAYLLAR" bölməsi görünəndə (bu, `lib/skills.js`-in avtomatik aşkarlamasıdır — hər sətirdə KONKRET səbəb yazılır: frontmatter yoxdur, `name` formatı yanlışdır, `name` qovluq adı ilə üst-üstə düşmür, `description` boş/uzundur, ya da `skills/` kökündə tək duran `.md` fayldır).
 - İstifadəçi açıq şəkildə bir fayl göstərib "bunu skil et" desə.
 
 **Diqqət:** manifestdə namizəd görünsə də, istifadəçi konkret istəməyibsə özün təşəbbüs göstərib idxal etmə — sadəcə mövcudluğunu bil, soruşulanda hərəkətə keç.
@@ -17,25 +17,31 @@ Bu skil YENİ ALƏT tələb ETMİR — mövcud `view`/`create_file`/`str_replace
 ## Addımlar
 
 ### 1. Faylı oxu, tam anla
-`view` ilə faylın tam məzmununu oxu. Mövzunu, məqsədi, hansı kontekstdə faydalı olduğunu çıxar.
+`view` ilə faylın tam məzmununu oxu. Mövzunu, məqsədi, hansı kontekstdə faydalı olduğunu çıxar. Manifestdə səbəb artıq qeyd olunub — əgər sadəcə "name qovluq adı ilə üst-üstə düşmür" kimi kiçik bir problemdirsə, bütün 2a addımını təkrar etməyə ehtiyac yoxdur, sadəcə həmin sahəni düzəlt.
 
 ### 2. Frontmatter vəziyyətini yoxla
-- Fayl artıq `---\nname: ...\ndescription: ...\n---` ilə başlayır VƏ `description` "NƏ VAXT bu işlədilməlidir" məntiqini konkret (açar sözlərlə) izah edir → format düzgündür, yalnız 3-cü addıma keç (yenidən yazma).
-- Frontmatter yoxdur, ya da var amma `description` sadəcə "bu fayl X haqqındadır" kimi mövzu izahıdır (trigger deyil) → 2a-ya keç.
+- Fayl artıq `---\nname: ...\ndescription: ...\n---` ilə başlayır, `name` aşağıdakı QAYDALARA tam uyğundur, VƏ `description` "NƏ VAXT bu işlədilməlidir" məntiqini konkret (açar sözlərlə) izah edir → format düzgündür, yalnız 3-cü addıma keç.
+- Əks halda (frontmatter yoxdur/natamamdır, `name` qaydaları pozur, `description` mövzu izahıdır trigger deyil) → 2a-ya keç.
 
-### 2a. Frontmatter-i özün yarat (avtomatik taqlama)
-Bunun üçün əlavə API çağırışı YOXDUR — məzmunu artıq oxumusan, elə bu söhbətdə özün yaz:
-- **name**: qısa, kiçik hərflərlə, defis ilə (kebab-case). Məzmunun mövzusunu 1-3 sözlə əks etdirməlidir (məs. `docker-deploy`, `figma-export`, `sql-migration`).
-- **description**: DİGƏR mövcud skillərin formatına dəqiq uyğun yaz — "Nə vaxt istifadə et" + konkret trigger sözlər/ifadələr. Mövzu izahı YAZMA ("bu skil X haqqındadır" YOX), NƏ VAXT tetiklənməli onu yaz ("X ediləndə/soruşulanda istifadə et, trigger sözlər: ...").
+### 2a. Frontmatter-i özün yarat/düzəlt (avtomatik taqlama)
+Bunun üçün əlavə API çağırışı YOXDUR — məzmunu artıq oxumusan, elə bu söhbətdə özün yaz. Bu, rəsmi "Agent Skills" açıq standartına (agentskills.io/specification) uyğundur, server bunu SƏRT yoxlayır:
+
+- **name qaydaları (MƏCBURİ, server rədd edir əks halda):**
+  - Yalnız kiçik hərf (a-z), rəqəm (0-9), defis (-).
+  - Defislə başlaya/bitə bilməz, ardıcıl defis (`--`) ola bilməz.
+  - Maks 64 simvol.
+  - **Skilin qoyulacağı qovluğun adı ilə HƏRFİ-HƏRFİNƏ EYNİ olmalıdır** (`skills/docker-deploy/SKILL.md` → `name: docker-deploy`).
+  - Məzmunun mövzusunu 1-3 sözlə əks etdirməlidir (məs. `docker-deploy`, `figma-export`, `sql-migration`).
+- **description**: DİGƏR mövcud skillərin formatına dəqiq uyğun yaz, maks 1024 simvol — "Nə vaxt istifadə et" + konkret trigger sözlər/ifadələr. Mövzu izahı YAZMA ("bu skil X haqqındadır" YOX), NƏ VAXT tetiklənməli onu yaz ("X ediləndə/soruşulanda istifadə et, trigger sözlər: ...").
   - Nümunə (səhv): `description: Docker haqqında məlumat.`
   - Nümunə (düzgün): `description: Docker konteynerini build/deploy edərkən istifadə et. Trigger sözlər: "docker build", "container-ə çıxar", "image push et".`
 
 ### 3. Həcmi qiymətləndir — modul bölünməsi lazımdırmı?
-- Body (frontmatter-dən sonrakı hissə) ~150-200 sətirdən kiçikdirsə → olduğu kimi tək `SKILL.md` kimi saxla.
-- Böyükdürsə → `skill-creator` skilindəki "Böyük skillərin modul bölünməsi" bölməsinə bax və həmin qaydanı tətbiq et: qısa router `SKILL.md` + mövzuya görə ayrılmış əlavə fayl(lar) (`REFERENCE.md`, ya da `<alt-mövzu>.md`) eyni qovluqda.
+- Body (frontmatter-dən sonrakı hissə) ~500 sətirdən (spesifikasiyanın tövsiyəsi) kiçikdirsə → olduğu kimi tək `SKILL.md` kimi saxla.
+- Böyükdürsə → `skill-creator` skilindəki "Böyük skillərin modul bölünməsi" bölməsinə bax və rəsmi konvensiyanı tətbiq et: qısa router `SKILL.md` + detallar `skills/<ad>/references/` alt-qovluğuna (məs. `references/REFERENCE.md`, ya da mövzuya görə bir neçə fayl).
 
 ### 4. Yaz
-`create_file` ilə `skills/<name>/SKILL.md` (lazım olsa əlavə fayllar da) yarat. Qovluq adı ilə frontmatter-dəki `name` EYNİ olmalıdır (server bunu bu cür oxuyur, uyğunsuzluq problem yaratmaz amma səliqəsizlikdir).
+`create_file` ilə `skills/<name>/SKILL.md` (lazım olsa `references/` alt-qovluğundakı fayllar da) yarat. Qovluq adı ilə frontmatter-dəki `name` **DƏQIQ EYNİ** olmalıdır — server bunu indi sərt yoxlayır, uyğunsuzluq skili "İDXAL GÖZLƏYƏN" siyahısında saxlayır (yəni tapılmır).
 
 ### 5. Orijinal faylla bağlı soruş
 Mənbə fayl (məs. `skills/random-download.md` və ya Download qovluğundakı orijinal) silinsinmi? **Təsdiqsiz silmə ETMƏ** — bu, geri dönməz əməliyyatdır, GUARD qaydasına tabedir. İstifadəçi "hə, sil" desə, `bash: rm <yol>` işlət.
