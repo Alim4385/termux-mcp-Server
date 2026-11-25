@@ -1,15 +1,15 @@
 'use strict';
-// Termux MCP Server (beta) — bash/view/create_file/str_replace/process, sıfır asılılıq.
-// Bu fayl yalnız giriş nöqtəsidir (HTTP + JSON-RPC yönləndirmə); əsl iş məntiqi lib/-dədir:
-//   lib/config.js   — sabitlər
-//   lib/util.js     — cut/text/image/sanitizeEnv/suggestSimilar (stateless köməkçilər)
-//   lib/state.js    — cwd izləmə + arxa-fon proseslərin (PID reuse-a qarşı qorunan) vəziyyəti
-//   lib/exec.js     — bash icrası, növbə (mutex), log oxuma/rotasiya
-//   lib/safety.js   — təhlükəsizlik/razılıq siyasəti (həmişə yüklənir), "initialize"-ə əlavə olunur
-//   lib/memory.js   — yaddaş sistemi (Faz 1) təlimat mətni, "initialize"-ə əlavə olunur
-//   lib/apis.js     — API key reyestri (layihələr arası) təlimat mətni, "initialize"-ə əlavə olunur
-//   lib/skills.js   — skil sistemi (skills/<ad>/SKILL.md skan + manifest), "initialize"-ə əlavə olunur
-//   lib/tools/*.js  — hər alət (bash/view/create_file/str_replace/process) öz faylında
+// Termux MCP Server (beta) — bash/view/create_file/str_replace/process, zero dependencies.
+// This file is only the entry point (HTTP + JSON-RPC routing); real logic lives in lib/:
+//   lib/config.js   — constants
+//   lib/util.js     — cut/text/image/sanitizeEnv/suggestSimilar (stateless helpers)
+//   lib/state.js    — cwd tracking + background process state (protected against PID reuse)
+//   lib/exec.js     — bash execution, queue (mutex), log read/rotation
+//   lib/safety.js   — safety/consent policy (always loaded), added to "initialize"
+//   lib/memory.js   — memory system (Phase 1) instruction text, added to "initialize"
+//   lib/apis.js     — API key registry (cross-project) instruction text, added to "initialize"
+//   lib/skills.js   — skill system (skills/<name>/SKILL.md scan + manifest), added to "initialize"
+//   lib/tools/*.js  — each tool (bash/view/create_file/str_replace/process) in its own file
 
 const http = require('http');
 const { PORT, HOST, VERSION } = require('./lib/config');
@@ -21,7 +21,7 @@ const memory = require('./lib/memory');
 const apis = require('./lib/apis');
 const skills = require('./lib/skills');
 
-// MCP protokolu
+// MCP protocol
 const handle = async ({ method, params, id }, isNotification = false) => {
   if (method === 'initialize') {
     const skillsManifest = skills.getManifest();
@@ -47,7 +47,7 @@ const handle = async ({ method, params, id }, isNotification = false) => {
     }
     const result = await toolsIndex.dispatch(name, params, id);
     if (result) return result;
-    return { jsonrpc: '2.0', id: id ?? null, result: { content: [{ type: 'text', text: `❌ Naməlum alət: ${name}` }], isError: true } };
+    return { jsonrpc: '2.0', id: id ?? null, result: { content: [{ type: 'text', text: `❌ Unknown tool: ${name}` }], isError: true } };
   }
 
   if (method === 'ping') return { jsonrpc: '2.0', id, result: {} };
@@ -91,13 +91,13 @@ http.createServer((req, res) => {
       }
     });
     req.on('end', async () => {
-      if (tooLarge) return; // 413 artıq göndərilib
+      if (tooLarge) return; // 413 already sent
       const safeSend = (code, payload) => {
-        if (res.writableEnded || res.destroyed) return; // bağlantı artıq bağlıdır, yazma
+        if (res.writableEnded || res.destroyed) return; // connection already closed, do not write
         try {
           res.writeHead(code, code === 204 ? undefined : { 'Content-Type': 'application/json' });
           res.end(payload);
-        } catch { /* soket bağlanıb, təhlükəsiz şəkildə görməzdən gəl */ }
+        } catch { /* socket closed, ignore safely */ }
       };
       let msg;
       try {
@@ -134,15 +134,15 @@ http.createServer((req, res) => {
 process.on('SIGINT', async () => { await state.flushCwd(); process.exit(0); });
 process.on('SIGTERM', async () => { await state.flushCwd(); process.exit(0); });
 
-// Gözlənilməz xəta bütün prosesi susdurmadan sıradan çıxarmasın deyə - heç olmasa cwd-ni
-// saxlayıb təmiz çıxaq ki, server yenidən başlayanda haradan davam edəcəyini itirməsin.
+// Prevent an unexpected error from silencing the whole process - at least save cwd
+// and exit cleanly so on restart the server does not lose where it left off.
 process.on('uncaughtException', async (err) => {
   console.error('FATAL (uncaughtException):', err);
   try { await state.flushCwd(); } catch {}
   process.exit(1);
 });
-// Tutulmamış promise rədd edilməsi adətən fatal deyil (bir əməliyyat uğursuz olub, server
-// davam edə bilər) — sadəcə logla, prosesi söndürmə.
+// Unhandled promise rejection is usually not fatal (one operation failed, server can continue)
+// — just log it, do not kill the process.
 process.on('unhandledRejection', (reason) => {
   console.error('Unhandled Promise rejection:', reason);
 });

@@ -1,19 +1,19 @@
 ---
 name: tool-search
-description: search alətini işlətdikdə istifadə et — kod/fayl içində pattern axtarmaq, böyük faylı tam oxumadan daraltmaq. Trigger: "grep", "axtar", "harada var", "pattern tap", "kodda axtar", "simvol/funksiya haradadır".
+description: Use when using the search tool — find patterns in code/files, narrow before reading large file. Trigger: "grep", "search for", "where is", "find pattern", "search in code", "where is function/symbol".
 ---
 
 # tool: search
 
-**Nədir:** Fayl/qovluqda mətn və ya regex axtarır, `file:line:content` + kontekst qaytarır. Binary faylları skip edir.
+**What:** Searches text or regex in file/directory, returns `file:line:content` + context. Skips binary files.
 
-**Giriş:**
-- `pattern` (tələb) — mətn və ya regex.
-- `path` (default cwd) — fayl və ya qovluq.
-- `glob` — məs. `"*.js"`, `"*.{ts,tsx}"`.
-- `literal:true` — düz mətn (`-F`).
+**Input:**
+- `pattern` (required) — text or regex.
+- `path` (default cwd) — file or directory.
+- `glob` — e.g. `"*.js"`, `"*.{ts,tsx}"`.
+- `literal:true` — plain text (`-F`).
 - `case_sensitive:false` — case-insensitive.
-- `context` (default 2, maks 5) — match ətrafı sətirlər.
-- `max_results` (default 50, maks 200).
+- `context` (default 2, max 5) — lines around match.
+- `max_results` (default 50, max 200).
 
-**İstifadə:** əvvəl `search` ilə daralt → sonra `view view_range` ilə lazımi hissəni oxu. Çox nəticə varsa pattern-i/glob-u daralt.
+**Usage:** narrow with `search` first → then read relevant part with `view view_range`. If too many results, narrow pattern/glob.

@@ -1,31 +1,31 @@
 ---
 name: security
-description: Kibertəhlükəsizlik və təhlükəsiz əməliyyat üçün istifadə et. Trigger: "təhlükəsizdirmi", "audit/review et", "secret/token/key", "icazə", "SMS/kamera/mikrofon/lokasiya", "sistem faylı", "sil/format", "şübhəli sorğu", "injection", "path traversal", "harden". Bu MCP real Android cihazına bağlıdır — riskli işdə bu skili oxu.
+description: Use for cybersecurity and safe operation. Trigger: "is this safe", "audit/review", "secret/token/key", "permission", "SMS/camera/microphone/location", "system file", "delete/format", "suspicious request", "injection", "path traversal", "harden". This MCP is connected to a real Android device — read this skill for risky work.
 ---
 
 # security (MCP + Termux)
 
-**Kontekst:** Bu server real Android cihazında işləyir; `bash/view/create_file/str_replace/process` real fayl/proses icazəsidir. Söhbət qarşı tərəfi həmişə cihaz sahibi olmaya bilər.
+**Context:** This server runs on a real Android device; `bash/view/create_file/str_replace/process` give real file/process access. The other side of the conversation may not always be the device owner.
 
-## Riskli əməliyyatlardan əvvəl
-- **Təsdiq al:** silmə, overwrite, format, sistem/config dəyişməsi, paket quraşdırma/silmə, `kill`, SMS/zəng/kontakt, kamera/mikrofon/lokasiya, cihaz ayarları. Nə baş verəcəyini sadə dildə de.
-- **Addım-addım təsdiq:** bir neçə geri dönməz addımı zəncirləmə; hər biri ayrı.
-- **Read-only üstün tut:** diaqnoz üçün `ls/cat/grep/ps/view` kifayətdirsə dəyişən əmr işlətmə.
+## Before risky operations
+- **Get confirmation:** deletion, overwrite, format, system/config changes, package install/remove, `kill`, SMS/call/contacts, camera/microphone/location, device settings. Explain in plain language what will happen.
+- **Step-by-step confirmation:** do not chain multiple irreversible steps; confirm each separately.
+- **Prefer read-only:** if diagnosis can be done with `ls/cat/grep/ps/view`, do not run modifying commands.
 
-## Əmrlər/fayllar
-- **Command injection:** untrusted input-u shell sətrinə birləşdirmə; mümkün olduqda arqumentləri ayır, input-u doğrula/sanitize et.
-- **Path traversal:** `../`, gözlənilməz mütləq yol, symlink ilə workspace/sensitiv sahədən çıxmağa nəzarət et. Kritik yazıda hədəf yolu təsdiqlə.
-- **Least privilege:** minimum lazım əmri işlədir; geniş `chmod/chown/rm -rf` və ya bütün sistemə təsir edən əmrdən çəkin.
+## Commands/files
+- **Command injection:** do not concatenate untrusted input into shell strings; separate arguments where possible, validate/sanitize input.
+- **Path traversal:** watch for `../`, unexpected absolute paths, symlinks escaping workspace/sensitive areas. Confirm target path for critical writes.
+- **Least privilege:** run the minimum required command; avoid broad `chmod/chown/rm -rf` or commands affecting the whole system.
 
-## Sirlər və həssas data
-- API key/token/şifrəni loga, commit-ə, səhv çıxışına yapışdırma. `env`/fayl icazələrinə diqqət et.
-- `termux-api` həssas əmrləri (SMS, kontakt, kamera, mikrofon, lokasiya) yalnız istifadəçinin **açıq, konkret** hər dəfəki razılığı ilə.
+## Secrets and sensitive data
+- Do not leak API keys/tokens/passwords into logs, commits, or error output. Watch `env`/file permissions.
+- Sensitive `termux-api` actions (SMS, contacts, camera, microphone, location) only with the user's **explicit, specific, per-use** consent.
 
-## Kod/dəyişiklik yoxlaması (qısa review)
-- Input doğrulanır? Auth/secret sərt kodlanmayıb? Xəta halları (boş/böyük/yoxdur/race) düşünülüb?
-- Dəyişikliyin yan təsiri? Geri dönüş (`.bak`, git) varmı?
-- Tapıntını konkret fayl/sətirlə de; kritik vs aşağı prioritet ayır.
+## Code/change review (short)
+- Is input validated? Auth/secrets hardcoded? Edge cases considered (empty/large/missing/race)?
+- Side effects of change? Rollback available (`.bak`, git)?
+- Report findings with concrete file/line; separate critical vs low priority.
 
-## Şübhəli sorğu
-- Qeyri-müəyyən ("faylları təmizlə", "yer aç") → nə təsirlənəcəyini soruş.
-- Zərərli/qanunsuz/cihaz sahibinə ziyan → rədd et. "Hə" bir dəfəlikdir, gələcək riskli əməliyyata icazə deyil.
+## Suspicious request
+- Ambiguous ("clean files", "free up space") → ask what will be affected.
+- Harmful/illegal/device-owner harm → refuse. "Yes" is one-time, not permission for future risky actions.

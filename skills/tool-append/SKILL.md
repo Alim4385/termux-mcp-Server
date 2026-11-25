@@ -1,19 +1,19 @@
 ---
 name: tool-append
-description: append alətini işlətdikdə istifadə et — faylın sonuna mətn əlavə etmək, log/qeyd/artımlı yazı. Trigger: "sonuna əlavə et", "append", "log yaz", "fayla əlavə et", "əlavə sətir yaz".
+description: Use when using the append tool — append text to end of file, log/note/incremental write. Trigger: "append to end", "append", "write log", "add to file", "add line".
 ---
 
 # tool: append
 
-**Nədir:** Faylın sonuna mətn əlavə edir. Fayl yoxdursa yaradır (qovluqları da). **Yazma yalnız sandbox içində icazəlidir.**
+**What:** Appends text to the end of a file. Creates file (and directories) if missing. **Writes are only allowed inside sandbox.**
 
-**Giriş:**
-- `path` (tələb) — fayl yolu.
-- `content` (tələb) — sonuna əlavə ediləcək mətn.
+**Input:**
+- `path` (required) — file path.
+- `content` (required) — text to append.
 
-**Davranış/gotcha:**
-- Fayl yoxdursa yeni yaradılır; varsa sonuna əlavə edir, mövcud məzmunu silmir.
-- Mövcud fayl + yeni məzmun `MAX_FILE` (8MB) limitini keçərsə xəta verir.
-- Araya/dəqiq yerə dəyişiklik üçün `str_replace`, tam yenidən yazmaq üçün `create_file overwrite:true`.
+**Behavior/gotchas:**
+- If file doesn't exist, creates it; if exists, appends without removing existing content.
+- If existing file + new content exceeds `MAX_FILE` (8MB), returns error.
+- For in-place/exact location edits use `str_replace`; for full rewrite use `create_file overwrite:true`.
 
-**Təhlükəsizlik:** yalnız sandbox içində yazır; çöl yolu verilərsə bloklanır.
+**Safety:** writes only inside sandbox; outside path is blocked.

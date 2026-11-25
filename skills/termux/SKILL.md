@@ -1,32 +1,32 @@
 ---
 name: termux
-description: Termux/Android mühiti və termux-api üçün istifadə et. Trigger: "pkg install", "npm/pip install", "command not found", "permission denied", "storage/sdcard", "bildiriş/toast/vibrasiya/clipboard/batareya", "termux-api", "telefonla əlaqə".
+description: Use for Termux/Android environment and termux-api. Trigger: "pkg install", "npm/pip install", "command not found", "permission denied", "storage/sdcard", "notification/toast/vibration/clipboard/battery", "termux-api", "phone interaction".
 ---
 
 # termux
 
-**Mühit:** Android-da qeyri-standart Linux; `systemd` yoxdur, bəzi komanda/bayraqlar fərqlidir.
+**Environment:** Non-standard Linux on Android; no `systemd`, some commands/flags differ.
 
-**Paketlər:**
-- Sistem: `pkg install <ad>` (`pkg search <söz>` ilə tap). `command not found` → paketi de, **istifadəçidən təsdiq al, özün quraşdırma**.
-- Node native build: çox vaxt `pkg install build-essential python clang` lazım ola bilər.
-- Python: `pip install ...`; bəzən `--break-system-packages` gərəkir.
+**Packages:**
+- System: `pkg install <name>` (find with `pkg search <word>`). `command not found` → identify package, **ask user for confirmation, do not install yourself**.
+- Node native build: often needs `pkg install build-essential python clang`.
+- Python: `pip install ...`; sometimes `--break-system-packages` is needed.
 
-**Yollar/icazə:**
-- HOME: `/data/data/com.termux/files/home`, workspace burada.
-- `/sdcard`/shared storage üçün əvvəlcədən `termux-setup-storage` (istifadəçi özü işlətməlidir). Uğurdan sonra `~/storage/shared`.
+**Paths/permissions:**
+- HOME: `/data/data/com.termux/files/home`, workspace is here.
+- For `/sdcard`/shared storage, `termux-setup-storage` must be run first (user does it). After success: `~/storage/shared`.
 
-**Resurs:** telefon RAM/CPU məhduddur; uzun iş → `process`, foreground-da saxla.
+**Resources:** phone RAM/CPU is limited; long jobs → `process`, keep foreground free.
 
-## termux-api (`bash` ilə)
-Əvvəl `which termux-toast`; yoxdursa `pkg install termux-api` + Termux:API app lazım olduğunu de.
+## termux-api (via `bash`)
+First check `which termux-toast`; if missing, tell user `pkg install termux-api` + Termux:API app is needed.
 
-| Məqsəd | Əmr |
+| Purpose | Command |
 |---|---|
-| Bildiriş | `termux-notification --title "..." --content "..." [--id X]` |
-| Toast | `termux-toast "..."` (`-s` uzun) |
-| Vibrasiya | `termux-vibrate -d 300` |
-| Clipboard yaz/oxu | `termux-clipboard-set` / `termux-clipboard-get` |
-| Batareya | `termux-battery-status` |
+| Notification | `termux-notification --title "..." --content "..." [--id X]` |
+| Toast | `termux-toast "..."` (`-s` for long) |
+| Vibration | `termux-vibrate -d 300` |
+| Clipboard set/get | `termux-clipboard-set` / `termux-clipboard-get` |
+| Battery | `termux-battery-status` |
 
-**Həssas (kamera/mikrofon/lokasiya/kontakt/SMS):** yalnız istifadəçinin açıq, konkret, hərdəfəlik razılığı ilə. Əmrləri ayrı-ayrı işlədir, exit kodunu yoxla.
+**Sensitive (camera/microphone/location/contacts/SMS):** only with user's explicit, specific, per-use consent. Run commands separately, check exit code.

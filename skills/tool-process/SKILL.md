@@ -1,18 +1,18 @@
 ---
 name: tool-process
-description: process alətini işlətdikdə istifadə et — uzun/bitməyən arxa fon prosesi (dev server, build, watch, npm/pip install). Trigger: "serveri başlat", "arxa fonda işlət", "npm install uzun çəkir", "dev server", "build", "watch". bash timeout-dan qaçmaq üçün bunu işlət.
+description: Use when using the process tool — long-running/non-terminating background processes (dev server, build, watch, npm/pip install). Trigger: "start server", "run in background", "npm install takes long", "dev server", "build", "watch". Use this to avoid bash timeout.
 ---
 
 # tool: process
 
-**Nədir:** Arxa fon prosesi başladır/izləyir/dayandırır. `bash` uzun işi üçün deyil, bu üçündür.
+**What:** Starts/monitors/stops background processes. Not for long jobs in `bash` — use this.
 
 **Actions:**
-- `start` — `cmd` tələb. Cmd-in sonuna `&` **YAZMA** (detached onsuzdur). `env` əlavə edə bilər. `unsafe:true` yalnız açıq lazım olduqda. Qaytarır: `{pid, log, status}`.
-- `wait` — `log`, `pattern` tələb. `regex:true` olsa pattern JS regexdir (`flags` məsələn `"i"`). `timeout` default 30000, maks 55000; `interval` default 500, min 200, maks 5000. Log-un son 64KB-ı yoxlanır. Qaytarır: `{found, log, content}`.
-- `list` — bu alətlə başlayan canlı proseslər + server stats `{uptime_s,memory_mb,cwd,active_processes}`. Bütün sistem üçün `ps aux`.
-- `kill` — `pid` tələb, yalnız bu alətin start etdiyi PID. `signal`: `SIGTERM`(default)/`SIGKILL`. Proses qrupu öldürülür; PID reuse imzası uyğun gəlməsə ləğv edilir.
+- `start` — `cmd` required. Do **NOT** add `&` at end (already detached). Can add `env`. `unsafe:true` only when explicitly needed. Returns: `{pid, log, status}`.
+- `wait` — `log`, `pattern` required. If `regex:true`, pattern is JS regex (`flags` e.g. `"i"`). `timeout` default 30000, max 55000; `interval` default 500, min 200, max 5000. Checks last 64KB of log. Returns: `{found, log, content}`.
+- `list` — live processes started by this tool + server stats `{uptime_s,memory_mb,cwd,active_processes}`. For all system processes use `ps aux`.
+- `kill` — `pid` required, only PID started by this tool. `signal`: `SIGTERM`(default)/`SIGKILL`. Kills process group; cancelled if PID reuse signature doesn't match.
 
-**Pattern:** `start` → `wait` (real hazır siqnalı: "ready", "Listening", port) → iş gör → `kill`. `sleep` ilə təxmin etmə.
+**Pattern:** `start` → `wait` (real ready signal: "ready", "Listening", port) → do work → `kill`. Do not guess with `sleep`.
 
-**Gotcha:** server restart olsa da eyni proses canlıdırsa `list`-də görünə bilər. Köhnə `.proc-*.log` təmizlənir; 50MB+ aktiv log kəsilir. `wait` tapmasa belə son content qaytarır — diaqnoz üçün oxu.
+**Gotchas:** after server restart, a still-alive process may still appear in `list`. Old `.proc-*.log` files are cleaned; active logs >50MB are trimmed. Even if `wait` doesn't find pattern, it returns last content — read it for diagnosis.
