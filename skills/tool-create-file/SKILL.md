@@ -14,7 +14,7 @@ description: create_file alətini işlətdikdə istifadə et — yeni fayl yarat
 - `check_only` (bool) — heç nə yazmır, `{exists,size,isDirectory}` qaytarır.
 
 **Davranış/gotcha:**
-- Fayl artıq varsa və `overwrite:false` → xəta; kiçik dəyişiklik üçün `str_replace`, tam yenidən yazma üçün `overwrite:true`.
+- Fayl artıq varsa və `overwrite:false` → xəta; kiçik dəyişiklik üçün `str_replace`, sona əlavə üçün `append`, tam yenidən yazma üçün `overwrite:true`.
 - `check_only` fayl sisteminə yazmır — təhlükəsiz yoxlama.
 - Backup `.bak` eyni qovluqdadır; uğursuz backup yazılışı bloklamır.
 - Böyük mövcud faylı köçürmək üçün `view`+`create_file` əvəzinə `bash cp/cat` üstün tut (token qənaəti).
