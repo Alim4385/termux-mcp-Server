@@ -1,24 +1,24 @@
 ---
 name: tool-gitmcp
-description: GitHub repozitoriyaları üçün gitmcp aləti — public GitHub repo sənədlərini/kodunu GitMCP (gitmcp.io) ilə gətirmək və axtarmaq. Trigger: "GitHub repo docs", "bu kitabxananın sənədləri", "repo kodunda axtar", "gitmcp", "repository documentation".
+description: Use for GitHub repository docs/code via GitMCP (gitmcp.io). Trigger: "GitHub repo docs", "library documentation", "search repo code", "gitmcp", "repository documentation".
 ---
 
 # tool: gitmcp
 
-**Nədir:** GitHub repoları üçün remote MCP aləti. `https://gitmcp.io/{owner}/{repo}` endpoint-inə qoşulub public GitHub repozitoriyasının sənədlərini gətirir/axtarır.
+**What:** Remote MCP tool for GitHub repos. Connects to `https://gitmcp.io/{owner}/{repo}` to fetch/search documentation and code of a public GitHub repository.
 
-**Nə vaxt:** İstifadəçi GitHub-dakı public repo haqqında soruşanda (sənəd, API istifadəsi, kod nümunəsi). Lokal fayllar üçün `view/search`, ümumi web üçün `web_search` istifadə et.
+**When:** When the user asks about a public repo on GitHub (docs, API usage, code examples). For local files use `view/search`, for general web use `web_search`.
 
-**Giriş:**
-- `owner` (tələb) — GitHub owner/org (məs. `facebook`).
-- `repo` (tələb) — repo adı (məs. `react`). `owner/repo` formatı da qəbul olunur.
-- `action` (tələb): `fetch_docs` | `search_docs` | `search_code` | `list_tools`.
-- `query` — `search_docs`/`search_code` üçün tələb.
+**Input:**
+- `owner` (required) — GitHub owner/org (e.g. `facebook`).
+- `repo` (required) — repo name (e.g. `react`). `owner/repo` format also accepted.
+- `action` (required): `fetch_docs` | `search_docs` | `search_code` | `list_tools`.
+- `query` — required for `search_docs`/`search_code`.
 
-**İstifadə:**
-- Ümumi repo sənədi: `fetch_docs`.
-- Konkret sual: `search_docs` + `query`.
-- Kod nümunəsi/implementasiya axtarışı: `search_code` + `query`.
-- Remote alətləri görmək: `list_tools`.
+**Usage:**
+- General repo docs: `fetch_docs`.
+- Specific question: `search_docs` + `query`.
+- Code example/implementation search: `search_code` + `query`.
+- See remote tools: `list_tools`.
 
-**Qeyd:** Yalnız public GitHub repoları; remote MCP çağırışıdır, şəbəkə/endpoint xətası ola bilər.
+**Note:** Public GitHub repos only; remote MCP call, network/endpoint errors possible.

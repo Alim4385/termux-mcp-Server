@@ -1,22 +1,22 @@
 ---
 name: tool-str-replace
-description: str_replace alətini işlətdikdə istifadə et — mövcud faylda dəqiq mətn dəyişmək, çoxlu edit, replace_all. Trigger: "mətn dəyiş", "replace", "edit et", "old_str tapılmadı", "bir neçə yeri dəyiş", "edits". Fayl yoxdursa create_file, tam yenidən yazma üçün create_file overwrite.
+description: Use when using the str_replace tool — exact text edit in existing file, multiple edits, replace_all. Trigger: "change text", "replace", "edit this", "old_str not found", "change multiple places", "edits". If file doesn't exist use create_file; for full rewrite use create_file overwrite.
 ---
 
 # tool: str_replace
 
-**Nədir:** Mövcud faylda `old_str` → `new_str` əvəz edir. Nisbi/mütləq yol, amma **yazma yalnız sandbox içində icazəlidir**.
+**What:** Replaces `old_str` → `new_str` in an existing file. Relative/absolute path, but **writes are only allowed inside sandbox**.
 
-**Giriş:**
-- `path` (tələb).
-- Tək edit: `old_str` (tələb), `new_str` (default ""), `replace_all` (default false).
-- Çoxlu edit: `edits: [{old_str,new_str,replace_all?}, ...]` — verilsə tək sahələrdən üstün tutulur.
+**Input:**
+- `path` (required).
+- Single edit: `old_str` (required), `new_str` (default ""), `replace_all` (default false).
+- Multiple edits: `edits: [{old_str,new_str,replace_all?}, ...]` — takes precedence over single fields.
 
-**Davranış/gotcha:**
-- Default: `old_str` faylda **dəqiq 1 dəfə** olmalıdır. 0 dəfə → oxşar namizəd/sətir təklifi verir; >1 dəfə → xəta, ya unikal kontekst əlavə et, ya `replace_all:true`.
-- `edits` **ardıcıl** tətbiq olunur: 2-ci edit 1-cinin nəticəsinə baxır. Eyni mətni iki dəfə hədəfləmə.
-- `edits` **all-or-nothing**: hər hansı edit uğursuz olsa fayla heç nə yazılmır.
-- Hər uğurlu yazıdan əvvəl `<fayl>.bak` saxlanılır (best-effort).
-- `old_str` boş sətir ola bilməz. `new_str` boş buraxılsa silmə kimi işləyir.
+**Behavior/gotchas:**
+- Default: `old_str` must appear **exactly once** in file. 0 times → suggests similar candidate/line; >1 times → error, either add unique context or use `replace_all:true`.
+- `edits` are applied **sequentially**: 2nd edit sees result of 1st. Do not target same text twice.
+- `edits` are **all-or-nothing**: if any edit fails, nothing is written to file.
+- Before every successful write `<file>.bak` is saved (best-effort).
+- `old_str` cannot be empty string. Empty `new_str` acts as deletion.
 
-**Təhlükəsizlik:** böyük/kritik dəyişiklikdən əvvəl niyyəti yoxla; `.bak` geri dönüş üçündür.
+**Safety:** verify intent before large/critical changes; `.bak` is for rollback.

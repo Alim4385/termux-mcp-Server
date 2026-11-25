@@ -1,23 +1,23 @@
 ---
 name: tool-web-search
-description: web_search alətini işlətdikdə istifadə et — internetdə axtarış, cari hadisə, fakt, qiymət, hava/vaxt/valyuta, naməlum mövzu yoxlama. Trigger: "webdə axtar", "internetdə tap", "son xəbərlər", "qiyməti nədir", "bunu yoxla", "search web".
+description: Use when using the web_search tool — web search, current events, facts, prices, weather/time/currency, checking unknown topics. Trigger: "search web", "find on internet", "latest news", "what is the price", "check this", "search online".
 ---
 
 # tool: web_search
 
-**Nədir:** VortexSearch API (`MCP_WEB_SEARCH_URL`, default `https://searchapi-eta.vercel.app`) üzərindən web axtarışı edir. Nəticələri qısa mətn kimi qaytarır.
+**What:** Web search via VortexSearch API (`MCP_WEB_SEARCH_URL`, default `https://searchapi-eta.vercel.app`). Returns compact text results.
 
-**Giriş:**
-- `query` (tələb) — axtarış sorğusu.
+**Input:**
+- `query` (required) — search query.
 - `max_results` (1-8, default 5).
-- `freshness` — `day|week|month|year` (təzəlik filtri).
+- `freshness` — `day|week|month|year`.
 - `lang` — `az|tr|en|ru`.
-- `exclude_domains` — istisna domenlər.
+- `exclude_domains` — domains to exclude.
 
-**Davranış:**
-- Nəticələr `[id] title / url / date / snippet` formatında gəlir. Cavab verəndə `[id]` ilə istinad et.
-- `confidence` aşağıdırsa və ya nəticə yoxdursa, uydurma — "yoxlaya bilmədim" de.
-- Rəqəm/tarix iddialarını nəticədəki məzmuna görə yoxla.
-- API xətası/timeout olsa, qısa bildir və lazım gələrsə sorğunu daraldıb yenidən sına.
+**Behavior:**
+- Results come as `[id] title / url / date / snippet`. Cite with `[id]` when answering.
+- If `confidence` is low or no results, do not guess — say you could not verify.
+- Verify number/date claims against returned content.
+- On API error/timeout, report briefly and retry with narrower query if needed.
 
-**Qeyd:** Bu, lokal `search` (fayl/grep) deyil; internet axtarışıdır.
+**Note:** This is internet search, not local `search` (file/grep).

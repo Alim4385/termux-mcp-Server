@@ -1,27 +1,27 @@
 ---
 name: tool-bash
-description: bash alətini işlətdikdə istifadə et — shell əmri icra, paket/git/sistem əmrləri, grep/find ilə axtarış. Trigger: "əmr icra et", "bash", "terminal", "grep", "git", "skript işlədir", "command not found" diaqnozu. Uzun/bitməyən əmrlər üçün tool-process, sadə fayl oxu/yaz/dəyiş üçün tool-view/tool-create-file/tool-str-replace üstün tut.
+description: Use when using the bash tool — run shell commands, package/git/system commands, grep/find search. Trigger: "run command", "bash", "terminal", "grep", "git", "run script", "command not found" diagnosis. Prefer tool-process for long/non-terminating commands, and tool-view/tool-create-file/tool-str-replace for simple file read/write/edit.
 ---
 
 # tool: bash
 
-**Nədir:** Termux-da shell əmrini cari `cwd`-də icra edir; `cd`, `&&`, `;`, pipe işləyir. Adi rejimdə sandbox-da işləyir; cwd sandbox-dan çölə çıxdıqda geri sıxılır.
+**What:** Executes shell command in Termux in current `cwd`; `cd`, `&&`, `;`, pipes work. In normal mode runs in sandbox; if cwd goes outside sandbox it is clamped back.
 
-**Giriş:**
-- `cmd` (string, tələb) — bash əmri.
-- `stdin` (string) — interaktiv input; boş olsa da stdin EOF alır (asılı qalmır).
-- `timeout` (ms, default 60000, maks 90000) — aşanda `[TIMEOUT]`, proses kəsilir.
-- `env` (object) — mövcud env-ə əlavə; dəyərlər stringləşdirilir.
-- `unsafe` (bool) — `true` olsa sandbox təhlükəsizlik yoxlamasını bypass edir; yalnız istifadəçi açıq istəyəndə və lazım olduqda.
+**Input:**
+- `cmd` (string, required) — bash command.
+- `stdin` (string) — interactive input; stdin gets EOF even if empty (no hang).
+- `timeout` (ms, default 60000, max 90000) — on exceed returns `[TIMEOUT]`, process is killed.
+- `env` (object) — added on top of existing env; values are stringified.
+- `unsafe` (bool) — if `true`, bypasses sandbox safety check; only when user explicitly requests and truly necessary.
 
-**Çıxış:** `[exit KOD] [MSms] [cwd: ...]` + stdout + `STDERR:`. Çıxış çox uzunsa kəsilir (`...[N kəsildi]...`).
+**Output:** `[exit CODE] [MSms] [cwd: ...]` + stdout + `STDERR:`. Very long output is truncated (`...[N truncated]...`).
 
-**Davranış/gotcha:**
-- Əmrlər **serial** icra olunur (mutex) — paralel bash çağırışı cwd-ni pozmur.
-- `cwd` marker ilə izlənir; `cd` sonrası növbəti çağırış yeni cwd-dədir. Yol yoxdursa cwd dəyişmir.
-- Uzun/bitməyən iş (`npm run dev`, watch, böyük build/install) → `process` aləti. `bash` timeout verir.
-- Sadə fayl işi üçün bash əvəzinə: oxu=`view`, yeni fayl=`create_file`, kiçik düzəliş=`str_replace` (daha etibarlı, strukturlaşdırılmış).
-- Kod axtarışı: `grep -rn "pattern" .` sonra `view view_range` ilə daralt.
-- Böyük çıxış gözlənirsə çıxışı fayla yönləndir, sonra `view tail/head`.
+**Behavior/gotchas:**
+- Commands run **serially** (mutex) — parallel bash calls do not corrupt cwd.
+- `cwd` is tracked by marker; after `cd`, next call is in new cwd. If path doesn't exist, cwd doesn't change.
+- Long/non-terminating work (`npm run dev`, watch, big build/install) → `process` tool. `bash` will timeout.
+- For simple file work prefer: read=`view`, new file=`create_file`, small edit=`str_replace` (more reliable/structured).
+- Code search: `grep -rn "pattern" .` then narrow with `view view_range`.
+- If large output expected, redirect to file, then `view tail/head`.
 
-**Təhlükəsizlik:** guard qaydalarına əməl et; dağıdıcı/sistem dəyişən əmrdən əvvəl təsdiq al. Untrusted mətni cmd-ə birbaşa yapışdırma — injection riski.
+**Safety:** follow guard rules; get confirmation before destructive/system-changing commands. Do not paste untrusted text directly into cmd — injection risk.

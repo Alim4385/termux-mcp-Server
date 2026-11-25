@@ -1,31 +1,31 @@
 ---
 name: skill-authoring
-description: Yeni skil yaratmaq və ya mövcud/xam skill faylını idxal/düzəltmək üçün istifadə et. Trigger: "yeni skill yarat", "SKILL.md yaz", "skill formatı", "bu faylı skill et", "skills təmizlə/düzəlt", "frontmatter səhvdir".
+description: Use to create a new skill or import/fix an existing/raw skill file. Trigger: "create a skill", "write SKILL.md", "skill format", "make this a skill", "clean/fix skills", "frontmatter is wrong".
 ---
 
 # skill-authoring
 
-**Nə vaxt skil, nə vaxt memory:** təkrarlana bilən prosedur/workflow → skil; fakt/qərar/tarixçə → `memory/`. Tək dəfəlik tapşırıq üçün skil yaratma.
+**When skill vs memory:** repeatable procedure/workflow → skill; fact/decision/history → `memory/`. Do not create a skill for a one-off task.
 
-## Format (server sərt yoxlayır)
-`skills/<ad>/SKILL.md`:
+## Format (server validates strictly)
+`skills/<name>/SKILL.md`:
 ```
 ---
-name: <ad>
-description: <NƏ VAXT işə düşür + trigger sözlər; mövzu izahı yox>
+name: <name>
+description: <WHEN it triggers + trigger words; not a topic explanation>
 ---
-<body: qısa, konkret, tool adları ilə>
+<body: short, concrete, with tool names>
 ```
-- `name`: `[a-z0-9]+(-[a-z0-9]+)*`, 1-64 simvol, qovluq adı ilə **eyni**.
-- `description`: 1-1024 simvol, trigger-ə fokuslan (kiçik LLM üçün aydın). "Nə vaxt istifadə et..." yaz.
-- Mürəkkəb/nested YAML, əlavə sahələr lazım deyil.
+- `name`: `[a-z0-9]+(-[a-z0-9]+)*`, 1-64 chars, **same** as directory name.
+- `description`: 1-1024 chars, trigger-focused (clear for small LLMs). Write "Use when...".
+- No complex/nested YAML, no extra fields needed.
 
-## Yaratma
-1. Təkrarlanabilirlik varmı? 2. `create_file` ilə yaz. 3. 2-3 trigger cümlə düşün, description-u ona görə yaz. 4. İstifadəçiyə bildir.
+## Creating
+1. Is it repeatable? 2. Write with `create_file`. 3. Think of 2-3 trigger phrases, write description accordingly. 4. Inform the user.
 
-## İdxal/düzəliş
-- `skills/`-ə atılmış xam `.md` və ya manifestdə "İDXAL/DÜZƏLİŞ GÖZLƏYƏN" → `view` ilə oxu, səbəbi düzəlt (frontmatter, name=dir, description trigger). Lazım olsa `manage-skills` yox, bu qayda ilə düzəlt.
-- Böyükdürsə: qısa `SKILL.md` + `references/` (1 səviyyə), frontmatter yalnız SKILL.md-də. 300+ sətir reference-ə içindəkilər əlavə et.
-- Orijinal xam faylı silməzdən əvvəl təsdiq al.
+## Import/fix
+- Raw `.md` dropped into `skills/` or "FILES AWAITING IMPORT/FIX" in manifest → read with `view`, fix the reason (frontmatter, name=dir, trigger description).
+- If large: short `SKILL.md` + `references/` (1 level deep), frontmatter only in SKILL.md. Add table of contents for 300+ line references.
+- Ask for confirmation before deleting original raw file.
 
-**Minimalizm:** body qısa, siqnal yüksək; token yedirtmə.
+**Minimalism:** short body, high signal; do not waste tokens.

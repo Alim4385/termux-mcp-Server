@@ -1,13 +1,13 @@
 ---
 name: debug
-description: Xəta, stack trace, gözlənilməz davranış, "işləmir/sındı" hallarında strukturlaşdırılmış diaqnoz üçün istifadə et. Trigger: "bug", "error", "niyə işləmir", "debug et", "traceback", "regression", "əvvəl işləyirdi".
+description: Use for structured diagnosis of errors, stack traces, unexpected behavior, "not working/broken" cases. Trigger: "bug", "error", "why doesn't it work", "debug this", "traceback", "regression", "it used to work".
 ---
 
 # debug
 
-**1. Reproduce** — gözlənilən vs faktiki nədir? `bash` ilə minimal şəkildə təkrarla; təxmin etmə.
-**2. Isolate** — son dəyişiklik: `git log --oneline -10`, `git diff -- <fayl>`. Əlaqəli faylı `view`, runtime logu `process wait`/tail ilə daralt. Komponenti kiçilt.
-**3. Diagnose** — hipotez qur, kiçik testlə yoxla. Simptom yox, **kök səbəb** tap.
-**4. Fix & verify** — `str_replace`/`create_file overwrite` ilə düzəlt, eyni addımla yenidən sına. Yan təsiri düşün. Təkrarlanmaması üçün guard/check əlavə et.
+**1. Reproduce** — what is expected vs actual? Reproduce minimally with `bash`; do not guess.
+**2. Isolate** — recent change: `git log --oneline -10`, `git diff -- <file>`. Narrow with `view` on relevant file, runtime logs via `process wait`/tail. Reduce the component.
+**3. Diagnose** — form a hypothesis, verify with a small test. Find **root cause**, not symptom.
+**4. Fix & verify** — fix with `str_replace`/`create_file overwrite`, rerun the same steps. Consider side effects. Add guard/check to prevent recurrence.
 
-**Hesabat:** kök səbəb → düzəliş (fayl/sətir) → yoxlama → qorunma. Faydalı dərsdirsə `memory/`-ə yaz.
+**Report:** root cause → fix (file/line) → verification → prevention. If it's a useful lesson, write to `memory/`.

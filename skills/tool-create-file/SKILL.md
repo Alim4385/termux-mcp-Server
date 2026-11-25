@@ -1,22 +1,22 @@
 ---
 name: tool-create-file
-description: create_file alətini işlətdikdə istifadə et — yeni fayl yaratmaq, faylı tam yenidən yazmaq, fayl mövcudluğunu yoxlamaq. Trigger: "fayl yarat", "yeni fayl yaz", "overwrite", "check_only", "mövcuddurmu yoxla".
+description: Use when using the create_file tool — create new file, fully rewrite file, check file existence. Trigger: "create file", "write new file", "overwrite", "check_only", "does file exist".
 ---
 
 # tool: create_file
 
-**Nədir:** Fayl yaradır/yazır. Nisbi yol `cwd`-yə görə həll olunur. **Yazma yalnız sandbox içində icazəlidir** (sandbox xaricində xəta verər). Qovluqlar avtomatik yaradılır (`mkdir -p`).
+**What:** Creates/writes a file. Relative path resolved against `cwd`. **Writes are only allowed inside sandbox** (outside sandbox returns error). Directories are auto-created (`mkdir -p`).
 
-**Giriş:**
-- `path` (tələb).
-- `content` (string) — `check_only:true` olduqda lazım deyil.
-- `overwrite` (bool, default false) — `true` olsa mövcud faylın üstünə yazır və köhnəni `<fayl>.bak` saxlayır (best-effort).
-- `check_only` (bool) — heç nə yazmır, `{exists,size,isDirectory}` qaytarır.
+**Input:**
+- `path` (required).
+- `content` (string) — not needed when `check_only:true`.
+- `overwrite` (bool, default false) — if `true`, overwrites existing file and saves old as `<file>.bak` (best-effort).
+- `check_only` (bool) — writes nothing, returns `{exists,size,isDirectory}`.
 
-**Davranış/gotcha:**
-- Fayl artıq varsa və `overwrite:false` → xəta; kiçik dəyişiklik üçün `str_replace`, sona əlavə üçün `append`, tam yenidən yazma üçün `overwrite:true`.
-- `check_only` fayl sisteminə yazmır — təhlükəsiz yoxlama.
-- Backup `.bak` eyni qovluqdadır; uğursuz backup yazılışı bloklamır.
-- Böyük mövcud faylı köçürmək üçün `view`+`create_file` əvəzinə `bash cp/cat` üstün tut (token qənaəti).
+**Behavior/gotchas:**
+- If file exists and `overwrite:false` → error; for small edit use `str_replace`, for append use `append`, for full rewrite use `overwrite:true`.
+- `check_only` does not write to filesystem — safe check.
+- Backup `.bak` is in same directory; failed backup does not block write.
+- For copying/moving large existing data, prefer `bash cp/cat` over `view`+`create_file` (token savings).
 
-**Təhlükəsizlik:** geri dönməz yazma/üstünə yazmadan əvvəl niyyət aydın olsun; kritik fayllarda istifadəçi təsdiqi.
+**Safety:** before irreversible write/overwrite, be clear about intent; get user confirmation for critical files.
