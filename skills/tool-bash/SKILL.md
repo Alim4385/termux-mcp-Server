@@ -5,13 +5,14 @@ description: bash alətini işlətdikdə istifadə et — shell əmri icra, pake
 
 # tool: bash
 
-**Nədir:** Termux-da shell əmrini cari `cwd`-də icra edir; `cd`, `&&`, `;`, pipe işləyir.
+**Nədir:** Termux-da shell əmrini cari `cwd`-də icra edir; `cd`, `&&`, `;`, pipe işləyir. Adi rejimdə sandbox-da işləyir; cwd sandbox-dan çölə çıxdıqda geri sıxılır.
 
 **Giriş:**
 - `cmd` (string, tələb) — bash əmri.
 - `stdin` (string) — interaktiv input; boş olsa da stdin EOF alır (asılı qalmır).
 - `timeout` (ms, default 60000, maks 90000) — aşanda `[TIMEOUT]`, proses kəsilir.
 - `env` (object) — mövcud env-ə əlavə; dəyərlər stringləşdirilir.
+- `unsafe` (bool) — `true` olsa sandbox təhlükəsizlik yoxlamasını bypass edir; yalnız istifadəçi açıq istəyəndə və lazım olduqda.
 
 **Çıxış:** `[exit KOD] [MSms] [cwd: ...]` + stdout + `STDERR:`. Çıxış çox uzunsa kəsilir (`...[N kəsildi]...`).
 
