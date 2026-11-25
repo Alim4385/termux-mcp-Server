@@ -5,7 +5,7 @@ description: create_file alətini işlətdikdə istifadə et — yeni fayl yarat
 
 # tool: create_file
 
-**Nədir:** Fayl yaradır/yazır. Nisbi yol `cwd`-yə görə; mütləq yol sistem boyu. Qovluqlar avtomatik yaradılır (`mkdir -p`).
+**Nədir:** Fayl yaradır/yazır. Nisbi yol `cwd`-yə görə həll olunur. **Yazma yalnız sandbox içində icazəlidir** (sandbox xaricində xəta verər). Qovluqlar avtomatik yaradılır (`mkdir -p`).
 
 **Giriş:**
 - `path` (tələb).

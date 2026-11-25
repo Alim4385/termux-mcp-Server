@@ -5,7 +5,7 @@ description: str_replace alətini işlətdikdə istifadə et — mövcud faylda 
 
 # tool: str_replace
 
-**Nədir:** Mövcud faylda `old_str` → `new_str` əvəz edir. Nisbi/mütləq yol.
+**Nədir:** Mövcud faylda `old_str` → `new_str` əvəz edir. Nisbi/mütləq yol, amma **yazma yalnız sandbox içində icazəlidir**.
 
 **Giriş:**
 - `path` (tələb).
