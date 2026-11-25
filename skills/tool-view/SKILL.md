@@ -16,7 +16,7 @@ description: view alətini işlətdikdə istifadə et — fayl/qovluq oxuma, ş�
 
 **Ağıllı oxuma (token qənaəti):**
 - Naməlum/böyük fayl: əvvəl `wc -l`/`ls -la`, sonra hədəfli oxu.
-- Axtarış: `grep -rn "pat" .` → sətir tap → `view_range:[n-10,n+10]`.
+- Axtarış: `search` aləti ilə pattern tap → `view_range:[n-10,n+10]` ilə oxu (və ya sürətli shell üçün `bash grep -rn`).
 - Log sonu: `mode:"tail", lines:50`. Başlanğıc: `head`.
 - Böyük qovluq: əvvəl `recursive:false`; konkret fayl üçün `find`/`grep -rln`.
 - `process wait` artıq log tail qaytarır — eyni logu yenə tam `view` etmə.
