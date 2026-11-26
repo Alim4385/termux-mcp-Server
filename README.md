@@ -30,7 +30,7 @@ A lightweight, zero-dependency [Model Context Protocol (MCP)](https://modelconte
 
 - **Zero dependencies** — plain Node.js, no npm install required.
 - **MCP over HTTP** — simple JSON-RPC 2.0 endpoint for MCP clients.
-- **10 built-in tools** — shell, file read/write/edit/append/search, background process management, web search, GitHub repo docs, and library docs.
+- **11 built-in tools** — shell, local git, file read/write/edit/append/search, background process management, web search, GitHub repo docs, and library docs.
 - **Sandbox guardrails** — writes restricted to sandbox by default; dangerous command patterns blocked unless explicitly overridden.
 - **Skill system** — per-skill `SKILL.md` files auto-discovered and exposed in MCP `initialize.instructions`.
 - **Memory system** — lightweight topic-based memory files managed through existing tools (no extra memory tool).
@@ -133,7 +133,7 @@ Configuration is controlled via environment variables. Defaults are defined in `
 
 ## Tools
 
-The server currently exposes **10 tools**.
+The server currently exposes **11 tools**.
 
 | Tool | Purpose |
 |---|---|
@@ -144,6 +144,7 @@ The server currently exposes **10 tools**.
 | `append` | Append text to file end (creates file if missing) |
 | `process` | Manage long-running background processes (start/wait/list/kill) |
 | `search` | Grep-like text/regex search across files |
+| `git` | Structured local git operations (status/diff/log/add/commit/branch/...) |
 | `web_search` | Web search via VortexSearch API |
 | `gitmcp` | GitHub repository docs/code search via GitMCP |
 | `context7` | Library/framework docs lookup via Context7 |
@@ -305,6 +306,37 @@ Query up-to-date library/framework documentation via Context7.
 - Uses `MCP_CONTEXT7_URL` (default `https://mcp.context7.com/mcp`).
 - Optional API key via `CONTEXT7_API_KEY` or `MCP_CONTEXT7_API_KEY`.
 
+### 11) `git`
+
+Run structured local git operations.
+
+**Parameters**
+- `action` *(string, required)* — `status | diff | log | show | add | commit | branch | checkout | pull | push | remote | stash | clone | init | raw`
+- `path` *(string, optional)* — repo/directory path (default cwd)
+- `args` *(string[], optional)* — extra git args; required for `raw`
+- `message` *(string, commit)* — commit message
+- `files` *(string[], optional)* — files for add/checkout/stash
+- `branch` *(string, optional)* — branch name
+- `remote` *(string, optional)* — remote name
+- `ref` *(string, optional)* — ref/commit for show/log/diff/checkout
+- `staged` *(boolean, diff)* — `--staged`
+- `limit` *(number, log)* — default `20`, max `100`
+- `create` *(boolean, branch/checkout)* — create branch
+- `delete` *(boolean, branch/remote)* — delete
+- `force` *(boolean, optional)* — force delete / push uses `--force-with-lease`
+- `set_upstream` *(boolean, push)* — add `-u`
+- `all` *(boolean, optional)* — `-a`/`-A`
+- `url` *(string, clone/remote add)*
+- `dest` *(string, clone)* — destination directory
+- `name` *(string, remote)* — remote name
+- `timeout` *(number, optional)* — default `60000`, max `120000`
+- `unsafe` *(boolean, optional)* — bypass sandbox cwd clamp
+
+**Notes**
+- Not the same as `gitmcp` (which queries remote GitHub repo docs/code via GitMCP).
+- CWD is sandbox-clamped unless `unsafe:true`.
+- For destructive operations (force push, branch delete, raw), confirm intent first.
+
 ---
 
 ## Sandbox & Safety Model
@@ -348,7 +380,7 @@ Skills are stored as directories under `skills/<skill-name>/SKILL.md`.
 
 - `debug`, `security`, `skill-authoring`, `termux`
 - `tool-bash`, `tool-view`, `tool-create-file`, `tool-str-replace`, `tool-append`
-- `tool-process`, `tool-search`, `tool-web-search`, `tool-gitmcp`, `tool-context7`
+- `tool-process`, `tool-search`, `tool-git`, `tool-web-search`, `tool-gitmcp`, `tool-context7`
 
 ---
 
@@ -419,6 +451,7 @@ The `process` tool manages long-running jobs started by the server:
 │       ├── append.js
 │       ├── process.js
 │       ├── search.js
+│       ├── git.js
 │       ├── web_search.js
 │       ├── gitmcp.js
 │       └── context7.js
